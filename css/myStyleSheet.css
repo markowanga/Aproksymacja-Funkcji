@@ -1,0 +1,17 @@
+#title {
+    height: 100px;
+    width: 100%;
+    background-color: #283593;
+    color: white;
+    font-size: 30px;
+    padding-top: 25px
+}
+
+#body-row {
+    padding-top: 10px;
+    background-color: #F1F1F1
+}
+
+.card-content {
+    color: #1A237E
+}
