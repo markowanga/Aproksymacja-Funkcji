@@ -107,12 +107,12 @@ $('document').ready(function () {
     // pasek do przedziału
     var sliderRange = document.getElementById('sliderRange');
     noUiSlider.create(sliderRange, {
-        start: [-50, 50],
+        start: [-5, 5],
         connect: true,
         step: 1,
         range: {
-            'min': -100,
-            'max': 100
+            'min': -10,
+            'max': 10
         }
     });
     var skipValues = [
@@ -174,10 +174,10 @@ $('document').ready(function () {
             rangeValues.push(document.getElementById("inputRangeTo").value);
         }
         /*
-        functionChart.data.datasets[0].data = calculatePointsToFunction(document.getElementById('functionEquation').value,
-            parseFloat(rangeValues[0]), parseFloat(rangeValues[1]), parseFloat((rangeValues[1] - rangeValues[0])) / 1000);
-        functionChart.update();
-        */
+         functionChart.data.datasets[0].data = calculatePointsToFunction(document.getElementById('functionEquation').value,
+         parseFloat(rangeValues[0]), parseFloat(rangeValues[1]), parseFloat((rangeValues[1] - rangeValues[0])) / 1000);
+         functionChart.update();
+         */
         generateOrUpdateExerything(document.getElementById('functionEquation').value,
             parseFloat(rangeValues[0]), parseFloat(rangeValues[1]),
             parseFloat((rangeValues[1] - rangeValues[0])) / 1000,
@@ -205,21 +205,24 @@ function generateOrUpdateExerything(equation, rangeStart, rangeEnd, delta,
     approximationChart.update();
 
     var discrepancyPoints = [];
-    for (var count = 0; count<approximationPoints.length; count++)
-        if (functionPoints[count].x>=-Math.PI && functionPoints[count].x<=Math.PI)
-        discrepancyPoints.push({x: functionPoints[count].x, y: functionPoints[count].y-approximationPoints[count].y});
+    for (var count = 0; count < approximationPoints.length; count++)
+        if (functionPoints[count].x >= -Math.PI && functionPoints[count].x <= Math.PI)
+            discrepancyPoints.push({
+                x: functionPoints[count].x,
+                y: functionPoints[count].y - approximationPoints[count].y
+            });
     discrepancyChart.data.datasets[0].data = discrepancyPoints;
     discrepancyChart.update();
 }
 
 function makeApproximateFunction(baseFunction, precision/*, form, to*/) {
     // obliczamy wsp
-    var factors = FourierFactors(baseFunction,2*Math.PI, precision);
+    var factors = FourierFactors(baseFunction, 2 * Math.PI, precision);
 
     var newEquation = "" + factors[0].a;
-    for (var count=1; count<=precision; count++) {
-        newEquation += "+"+factors[count].a+"*sin("+count+"*x)";
-        newEquation += "+"+factors[count].b+"*cos("+count+"*x)";
+    for (var count = 1; count <= precision; count++) {
+        newEquation += "+" + factors[count].a + "*sin(" + count + "*x)";
+        newEquation += "+" + factors[count].b + "*cos(" + count + "*x)";
     }
 
     console.log("rownanie", newEquation);
@@ -229,14 +232,14 @@ function makeApproximateFunction(baseFunction, precision/*, form, to*/) {
 function FourierFactors(equation, T, factorsCount) {
     var table = [];
     table.push({
-        a: (calka("("+equation+")/"+T, -Math.PI, Math.PI)/Math.PI),
+        a: calka("(" + equation + ")*cos(" + 0 + "*x)", -Math.PI, Math.PI) / (2 * Math.PI),
         b: NaN
     });
 
-    for (var count = 1; count<=factorsCount; count++) {
+    for (var count = 1; count <= factorsCount; count++) {
         table.push({
-            a: calka("("+equation+")*sin("+count+"*x)", -Math.PI, Math.PI)/Math.PI,
-            b: calka("("+equation+")*cos("+count+"*x)", -Math.PI, Math.PI)/Math.PI
+            a: calka("(" + equation + ")*sin(" + count + "*x)", -Math.PI, Math.PI) / Math.PI,
+            b: calka("(" + equation + ")*cos(" + count + "*x)", -Math.PI, Math.PI) / Math.PI
         });
     }
 
